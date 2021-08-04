@@ -48,4 +48,4 @@ output "zone" {
 output "compute_disk_name" {
   description = "The Compute Additional Disk being created and attached to VM"
   value       = local.compute_disk_name
-}  
+} 

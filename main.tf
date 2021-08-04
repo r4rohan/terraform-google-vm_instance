@@ -30,6 +30,11 @@ locals {
   vm_login_firewall_name  = format("login-to-%s-%s", local.instance_name, var.name_suffix)
   vm_egress_firewall_name = format("%s-to-network-%s", local.instance_name, var.name_suffix)
   google_iap_cidr         = "35.235.240.0/20" # IAP netblock - https://cloud.google.com/iap/docs/using-tcp-forwarding
+    
+  # Additional Compute Disk Args
+  compute_disk_name = format("%s-vm-%s", var.disk_name, var.name_suffix)
+  create_add_disk   = length(var.disk_name) > 0 ? true : false
+  attach_add_disk   = local.create_add_disk ? true : false
 }
 
 resource "google_project_service" "compute_api" {
@@ -98,6 +103,22 @@ resource "google_compute_instance" "vm_instance" {
       metadata["windows-keys"],
     ]
   }
+}
+  
+resource "google_compute_disk" "compute_disk" {
+  count = (local.create_add_disk) ? 1 : 0
+  name  = local.compute_disk_name
+  zone  = local.zone
+  type  = var.boot_disk_type
+  image = var.boot_disk_image
+  size  = var.compute_disk_size
+}
+
+resource "google_compute_attached_disk" "attached_disk" {
+  count      = (local.attach_add_disk) ? 1 : 0
+  disk       = google_compute_disk.compute_disk.0.id
+  instance   = google_compute_instance.vm_instance.instance_id
+  depends_on = [google_compute_disk.compute_disk]
 }
 
 resource "google_compute_firewall" "login_to_vm" {

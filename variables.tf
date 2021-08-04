@@ -142,3 +142,15 @@ variable "fw_allowed_ports" {
   type        = list(string)
   default     = []
 }
+
+variable "disk_name" {
+  description = "Name of the Google Cloud Compute Disk that is being created."
+  type        = string
+  default     = ""
+}
+
+variable "compute_disk_size" {
+  description = "The size of disk in GigaBytes. Must be at least the size of the boot disk image."
+  type        = number
+  default     = 500
+}

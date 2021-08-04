@@ -44,3 +44,8 @@ output "zone" {
   description = "The zone in which the VM instance was launched."
   value       = google_compute_instance.vm_instance.zone
 }
+
+output "compute_disk_name" {
+  description = "The Compute Additional Disk being created and attached to VM"
+  value       = local.compute_disk_name
+}  

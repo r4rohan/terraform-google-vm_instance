@@ -118,6 +118,7 @@ resource "google_compute_attached_disk" "attached_disk" {
   count      = (local.attach_add_disk) ? 1 : 0
   disk       = google_compute_disk.compute_disk.0.id
   instance   = google_compute_instance.vm_instance.instance_id
+  zone       = local.zone
   depends_on = [google_compute_disk.compute_disk]
 }
 
